@@ -1,0 +1,276 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: oklch(96% 0.01 72);
+  color: oklch(20% 0.015 52);
+  width: 360px;
+  min-height: 100px;
+  max-height: 560px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem 0.75rem;
+  border-bottom: 1px solid oklch(88% 0.02 70);
+  background: oklch(92% 0.028 68);
+}
+.logo { color: oklch(62% 0.07 48); flex-shrink: 0; }
+h1 { font-size: 0.9rem; font-weight: 600; letter-spacing: -0.01em; color: oklch(18% 0.015 50); }
+
+/* ── Add form ── */
+.add-form {
+  padding: 0.75rem 1rem 0.6rem;
+  border-bottom: 1px solid oklch(89% 0.018 70);
+}
+.add-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+input[type="text"] {
+  flex: 1;
+  background: oklch(99% 0.004 75);
+  border: 1.5px solid oklch(86% 0.025 68);
+  color: oklch(18% 0.015 52);
+  padding: 0.45rem 0.65rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type="text"]:focus { border-color: oklch(62% 0.07 48); }
+input[type="text"]::placeholder { color: oklch(72% 0.018 60); }
+
+input[type="time"] {
+  background: oklch(99% 0.004 75);
+  border: 1.5px solid oklch(86% 0.025 68);
+  color: oklch(18% 0.015 52);
+  padding: 0.3rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  width: 88px;
+  color-scheme: light;
+}
+input[type="time"]:focus { border-color: oklch(62% 0.07 48); }
+
+button[type="submit"], .btn-save {
+  background: oklch(62% 0.07 48);
+  color: oklch(97% 0.005 75);
+  border: none;
+  padding: 0.45rem 0.85rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+button[type="submit"]:hover, .btn-save:hover { opacity: 0.82; }
+
+.link-btn {
+  background: none;
+  border: none;
+  color: oklch(55% 0.025 58);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.15s;
+}
+.link-btn:hover { color: oklch(35% 0.02 52); }
+#scheduleToggleSummary { color: oklch(62% 0.07 48); font-style: italic; }
+
+/* ── Schedule panel ── */
+.schedule-panel {
+  margin-top: 0.6rem;
+  background: oklch(92% 0.022 70);
+  border: 1px solid oklch(85% 0.025 68);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.schedule-panel.hidden { display: none; }
+
+.days-row, .time-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.label {
+  font-size: 0.75rem;
+  color: oklch(52% 0.018 58);
+  width: 32px;
+  flex-shrink: 0;
+}
+.to-label { width: auto; }
+
+.days { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+
+.day-btn {
+  background: oklch(96% 0.01 72);
+  border: 1.5px solid oklch(84% 0.022 68);
+  color: oklch(52% 0.02 58);
+  width: 30px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+  padding: 0;
+}
+.day-btn.active {
+  background: oklch(94% 0.04 62);
+  border-color: oklch(62% 0.07 48);
+  color: oklch(45% 0.06 48);
+}
+
+/* ── Error ── */
+.error {
+  color: oklch(50% 0.12 22);
+  font-size: 0.76rem;
+  min-height: 1rem;
+  margin-top: 0.3rem;
+}
+
+/* ── List ── */
+#listContainer {
+  overflow-y: auto;
+  flex: 1;
+}
+.empty {
+  color: oklch(65% 0.018 60);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1.4rem 1rem;
+}
+ul { list-style: none; }
+
+/* ── List items ── */
+li { border-bottom: 1px solid oklch(90% 0.015 70); }
+li:last-child { border-bottom: none; }
+
+.site-row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  transition: background 0.1s;
+}
+.site-row:hover { background: oklch(92% 0.02 70); }
+
+.site-host {
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 0.85rem;
+  color: oklch(25% 0.015 52);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site-schedule {
+  font-size: 0.72rem;
+  color: oklch(58% 0.02 58);
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: oklch(68% 0.02 60);
+  transition: color 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: oklch(89% 0.025 68); color: oklch(35% 0.02 52); }
+.icon-btn.remove:hover { color: oklch(50% 0.12 22); }
+
+/* ── Inline edit panel ── */
+.edit-panel {
+  padding: 0.6rem 0.75rem 0.7rem;
+  background: oklch(93% 0.022 70);
+  border-top: 1px solid oklch(87% 0.022 68);
+}
+.edit-host-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+.edit-host-row input[type="text"] { flex: 1; }
+
+.edit-schedule-panel {
+  background: oklch(96% 0.01 72);
+  border: 1.5px solid oklch(85% 0.022 68);
+  border-radius: 7px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.btn-cancel {
+  background: oklch(89% 0.022 68);
+  color: oklch(42% 0.018 55);
+  border: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.btn-cancel:hover { background: oklch(85% 0.025 66); }
+.btn-save {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+  border-radius: 6px;
+}
+
+.schedule-always-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.schedule-always-row label {
+  font-size: 0.78rem;
+  color: oklch(48% 0.02 55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+input[type="checkbox"] { accent-color: oklch(62% 0.07 48); cursor: pointer; }

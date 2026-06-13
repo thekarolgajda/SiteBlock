@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SiteBlock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <svg class="logo" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+      <circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    </svg>
+    <h1>SiteBlock</h1>
+  </div>
+
+  <form id="addForm" class="add-form" autocomplete="off">
+    <div class="add-row">
+      <input type="text" id="siteInput" placeholder="reddit.com" spellcheck="false" />
+      <button type="submit">Block</button>
+    </div>
+
+    <div class="schedule-toggle">
+      <button type="button" id="scheduleToggle" class="link-btn">
+        <span id="scheduleToggleIcon">▸</span> Schedule <span id="scheduleToggleSummary">Always</span>
+      </button>
+    </div>
+
+    <div id="schedulePanel" class="schedule-panel hidden">
+      <div class="days-row">
+        <span class="label">Days</span>
+        <div class="days" id="addDays">
+          <button type="button" class="day-btn active" data-day="1">Mo</button>
+          <button type="button" class="day-btn active" data-day="2">Tu</button>
+          <button type="button" class="day-btn active" data-day="3">We</button>
+          <button type="button" class="day-btn active" data-day="4">Th</button>
+          <button type="button" class="day-btn active" data-day="5">Fr</button>
+          <button type="button" class="day-btn" data-day="6">Sa</button>
+          <button type="button" class="day-btn" data-day="0">Su</button>
+        </div>
+      </div>
+      <div class="time-row">
+        <span class="label">From</span>
+        <input type="time" id="addStart" value="09:00" />
+        <span class="label to-label">to</span>
+        <input type="time" id="addEnd" value="18:00" />
+      </div>
+    </div>
+
+    <p class="error" id="addError"></p>
+  </form>
+
+  <div id="listContainer">
+    <p class="empty" id="emptyMsg">No sites blocked yet.</p>
+    <ul id="siteList"></ul>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
