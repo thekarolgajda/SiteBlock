@@ -34,4 +34,4 @@ Everything stays on your device. SiteBlock uses `browser.storage.local` — no d
 
 ## License
 
-MIT
+GPL-3.0
