@@ -1,10 +1,11 @@
 {
   "manifest_version": 2,
   "name": "SiteBlock",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Block websites you're addicted to",
   "browser_specific_settings": {
     "gecko": {
+      "id": "{cb3b14c8-22da-4561-a8d0-cc8bf8a3e240}",
       "data_collection_permissions": {
         "required": ["none"]
       }
