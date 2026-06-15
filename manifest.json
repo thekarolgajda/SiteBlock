@@ -1,8 +1,15 @@
 {
   "manifest_version": 2,
   "name": "SiteBlock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Block websites you're addicted to",
+  "browser_specific_settings": {
+    "gecko": {
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
   "icons": {
     "48": "icons/icon-48.png",
     "96": "icons/icon-96.png"
