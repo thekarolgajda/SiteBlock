@@ -1,5 +1,16 @@
-document.getElementById("manageBtn").addEventListener("click", () => {
-  browser.browserAction.openPopup();
+document.getElementById("manageBtn").addEventListener("click", async () => {
+  // browserAction.openPopup() is desktop-only — Firefox for Android doesn't
+  // support it. Try the native popup, and fall back to opening the management
+  // UI as a regular tab (works on both desktop and Android).
+  try {
+    if (browser.browserAction && browser.browserAction.openPopup) {
+      await browser.browserAction.openPopup();
+      return;
+    }
+  } catch {
+    // openPopup can reject (e.g. no user gesture on some platforms) — fall through.
+  }
+  browser.tabs.create({ url: browser.runtime.getURL("popup/popup.html") });
 });
 
 const params = new URLSearchParams(window.location.search);

@@ -4,7 +4,8 @@ body {
   font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: oklch(96% 0.01 72);
   color: oklch(20% 0.015 52);
-  width: 360px;
+  width: min(360px, 100vw);
+  margin: 0 auto; /* center when opened as a full tab (Firefox for Android) */
   min-height: 100px;
   max-height: 560px;
   overflow: hidden;
