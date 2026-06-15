@@ -94,4 +94,18 @@ draw_icon(96).save("icons/icon-96.png")
 
 ## CSP gotcha
 
-Firefox enforces Content Security Policy on extension pages — inline `onclick` attributes are blocked. All event handlers must be wired in `.js` files via `addEventListener`. To open the popup programmatically, call `browser.browserAction.openPopup()` from a JS event listener (not inline); it works from extension pages with a user gesture.
+Firefox enforces Content Security Policy on extension pages — inline `onclick` attributes are blocked. All event handlers must be wired in `.js` files via `addEventListener`. To open the popup programmatically, call `browser.browserAction.openPopup()` from a JS event listener (not inline). Note: `openPopup()` is **desktop-only** — it throws on Firefox for Android. `blocked/blocked.js` feature-detects it and falls back to opening `popup/popup.html` as a tab (works on both). Popup CSS uses `width: min(360px, 100vw)` so it renders on phones and as a full tab.
+
+## Packaging for AMO (addons.mozilla.org)
+
+Build the upload zip from the repo root (manifest.json must be at the zip root, dev files excluded):
+
+```
+zip -r siteblock-<version>.zip manifest.json background.js blocked popup icons -x "*.DS_Store"
+```
+
+- **Bump `manifest.json` `version` on every upload** — AMO rejects a re-used version number.
+- **`data_collection_permissions` is required** (in `browser_specific_settings.gecko`). SiteBlock collects nothing, so it declares `{ "required": ["none"] }`. AMO's UI consent step must match: "Does not collect data".
+- No source upload needed — plain HTML/CSS/JS, no build/minification.
+- `STORE_LISTING.md` holds paste-ready listing copy + reviewer permission justifications; keep it in sync with releases.
+- To ship on Firefox for Android, tick "compatible with Firefox for Android" during submission.
