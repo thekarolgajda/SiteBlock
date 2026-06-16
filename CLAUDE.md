@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Commit conventions
+
+Do **not** add a `Co-Authored-By: Claude ...` trailer (or any Claude/AI attribution) to commit messages in this repo. Commits should not show Claude as an author on GitHub.
+
 ## What this is
 
 SiteBlock is a Firefox browser extension (Manifest V2) that blocks user-configured websites. No build step, no dependencies — plain HTML/CSS/JS loaded directly by Firefox.
@@ -94,7 +98,16 @@ draw_icon(96).save("icons/icon-96.png")
 
 ## CSP gotcha
 
-Firefox enforces Content Security Policy on extension pages — inline `onclick` attributes are blocked. All event handlers must be wired in `.js` files via `addEventListener`. To open the popup programmatically, call `browser.browserAction.openPopup()` from a JS event listener (not inline). Note: `openPopup()` is **desktop-only** — it throws on Firefox for Android. `blocked/blocked.js` feature-detects it and falls back to opening `popup/popup.html` as a tab (works on both). Popup CSS uses `width: min(360px, 100vw)` so it renders on phones and as a full tab.
+Firefox enforces Content Security Policy on extension pages — inline `onclick` attributes are blocked. All event handlers must be wired in `.js` files via `addEventListener`. To open the popup programmatically, call `browser.browserAction.openPopup()` from a JS event listener (not inline). Note: `openPopup()` is **desktop-only** — it throws on Firefox for Android. `blocked/blocked.js` feature-detects it and falls back to opening `popup/popup.html` as a tab (works on both).
+
+## Popup width gotcha (`vw` collapses the popup)
+
+Do **not** use `vw` units to size the popup `body`. In a Firefox desktop browser-action popup, the popup window sizes itself to fit the document, so `100vw` resolves to `0` during the initial sizing pass — `width: min(360px, 100vw)` evaluated to `0` and the popup opened as an invisible sliver. Use an explicit pixel width (`width: 360px`) and handle narrow phone screens (popup opened as a full tab on Android) with a `%`-based media query, not `vw`:
+
+```css
+body { width: 360px; }
+@media (max-width: 360px) { body { width: 100%; } }
+```
 
 ## Packaging for AMO (addons.mozilla.org)
 
