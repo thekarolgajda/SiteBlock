@@ -4,13 +4,20 @@ body {
   font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: oklch(96% 0.01 72);
   color: oklch(20% 0.015 52);
-  width: min(360px, 100vw);
+  width: 360px;
   margin: 0 auto; /* center when opened as a full tab (Firefox for Android) */
   min-height: 100px;
   max-height: 560px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Phone screens narrower than the popup (when opened as a full tab on
+   Firefox for Android). Uses % not vw — vw resolves to 0 in a desktop
+   browser-action popup and collapses it to a zero-width sliver. */
+@media (max-width: 360px) {
+  body { width: 100%; }
 }
 
 /* ── Header ── */

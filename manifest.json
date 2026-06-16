@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SiteBlock",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Block websites you're addicted to",
   "browser_specific_settings": {
     "gecko": {
