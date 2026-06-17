@@ -1,3 +1,8 @@
+// Chrome compat: alias the promise-based `browser.*` namespace to `chrome.*`.
+// Firefox provides `browser` natively (no-op there); Chrome MV3's `chrome.*`
+// APIs already return promises, so this is all the shared code needs.
+if (typeof browser === "undefined") globalThis.browser = chrome;
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function normalizeHost(input) {

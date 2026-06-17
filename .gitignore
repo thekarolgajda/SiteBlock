@@ -2,3 +2,10 @@
 
 # Build artifacts
 siteblock-*.zip
+dist-chrome/
+
+# Local-only Chrome smoke test (needs Playwright)
+test-chrome.mjs
+
+# Local planning notes
+ANDROID_TESTING_PLAN.md

@@ -26,18 +26,26 @@ To inspect the popup: right-click the toolbar icon → **Inspect Popup**.
 ## Architecture
 
 ```
-manifest.json          Extension manifest (MV2, persistent background)
-background.js          Service worker equivalent — intercepts all main_frame requests
-popup/                 Toolbar popup (add/edit/remove blocked sites)
-blocked/               Full-page redirect target shown when a site is blocked
+manifest.json          Firefox manifest (MV2, persistent background)
+background.js          Firefox background — intercepts all main_frame requests (blocking webRequest)
+manifest.chrome.json   Chrome manifest (MV3) — staged to manifest.json by build-chrome.sh
+background.chrome.js   Chrome service worker — declarativeNetRequest redirect rules (no blocking webRequest in MV3)
+build-chrome.sh        Stages Chrome-named files into dist-chrome/ and zips for the Chrome Web Store
+popup/                 Toolbar popup (add/edit/remove blocked sites) — shared by both browsers
+blocked/               Full-page redirect target shown when a site is blocked — shared by both browsers
 icons/                 PNG icons (regenerate with Pillow — see below)
 PRODUCT.md             Design strategy: users, personality, principles
 ```
 
+### Cross-browser layout
+
+`popup/` and `blocked/` are shared verbatim by both browsers. They call the promise-based `browser.*` API; a two-line shim at the top of `popup/popup.js` and `blocked/blocked.js` aliases `browser` to `chrome` when `browser` is undefined (a no-op in Firefox, since Chrome MV3's `chrome.*` APIs already return promises). Only the manifest and background script differ per browser. On Chrome, `browser.browserAction` is undefined, so `blocked.js` falls back to opening the popup as a tab (same path as Firefox for Android).
+
 ### Data flow
 
 1. **Storage** — `browser.storage.local` holds one key: `blockedSites`, an array of site objects `{ host: string, schedule: null | { days: number[], startTime: string, endTime: string } }`. `schedule: null` means always block.
-2. **background.js** loads the list on startup and keeps it in memory. `browser.storage.onChanged` keeps it in sync when the popup writes. On every `main_frame` request, `isBlocked()` checks hostname + active schedule, and redirects to the blocked page if matched.
+2. **background.js (Firefox)** loads the list on startup and keeps it in memory. `browser.storage.onChanged` keeps it in sync when the popup writes. On every `main_frame` request, `isBlocked()` checks hostname + active schedule, and redirects to the blocked page if matched.
+   **background.chrome.js (Chrome)** can't use blocking webRequest in MV3, so it translates the blocklist into `declarativeNetRequest` dynamic redirect rules. `recomputeRules()` runs on install/startup, on `storage.onChanged`, and (only while a scheduled site exists) on a 1-minute `chrome.alarms` tick so schedule windows flip on/off. Always-block sites become permanent rules; scheduled sites get a rule only while `isActiveNow()`. Each rule uses `requestDomains` to match host + subdomains and a `regexFilter`/`regexSubstitution` pair to capture the requested hostname into the blocked page's `?blocked=` param.
 3. **popup/popup.js** reads/writes storage directly via `getSites()` / `saveSites()`. The list is fully re-rendered on every change (`renderList()`). Inline edit panels are injected into `<li>` elements by `openEditPanel()`.
 4. **blocked/blocked.js** reads the original URL from `?blocked=` query param and displays the hostname.
 
@@ -122,3 +130,16 @@ zip -r siteblock-<version>.zip manifest.json background.js blocked popup icons -
 - No source upload needed — plain HTML/CSS/JS, no build/minification.
 - `STORE_LISTING.md` holds paste-ready listing copy + reviewer permission justifications; keep it in sync with releases.
 - To ship on Firefox for Android, tick "compatible with Firefox for Android" during submission.
+
+## Packaging for the Chrome Web Store
+
+Run `./build-chrome.sh`. It stages `manifest.chrome.json` → `manifest.json` and `background.chrome.js` → `background.js` (plus the shared `popup/`, `blocked/`, `icons/`) into `dist-chrome/`, then produces `siteblock-chrome-<version>.zip` with `manifest.json` at the zip root.
+
+- **Bump `manifest.chrome.json` `version` on every upload** — the Chrome Web Store rejects a re-used version number. It versions independently of the Firefox build.
+- One-time **$5 developer registration** is required for the Chrome Web Store.
+- Permissions differ from Firefox: `declarativeNetRequest` + `alarms` + `storage` + `host_permissions: ["<all_urls>"]` (no `webRequest`/`webRequestBlocking`, which don't exist in MV3).
+- Loading unpacked for local testing: `chrome://extensions` → enable Developer mode → **Load unpacked** → select `dist-chrome/` (run `build-chrome.sh` without the cleanup step, or unzip the build). Inspect the service worker via the **service worker** link on the extension card.
+
+### Loading the Chrome build for testing
+
+`build-chrome.sh` deletes `dist-chrome/` after zipping. To keep it for `Load unpacked`, unzip the artifact: `unzip -o siteblock-chrome-<version>.zip -d dist-chrome`.
