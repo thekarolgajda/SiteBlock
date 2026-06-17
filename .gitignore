@@ -7,5 +7,8 @@ dist-chrome/
 # Local-only Chrome smoke test (needs Playwright)
 test-chrome.mjs
 
+# Local-only scratch notes
+*.local.md
+
 # Local planning notes
 ANDROID_TESTING_PLAN.md
